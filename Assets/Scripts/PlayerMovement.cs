@@ -22,31 +22,43 @@ public class PlayerMovement : MonoBehaviour
 
     // Update is called once per frame
     void Update()
+{
+    groundedPlayer = cc.isGrounded;
+
+    if (groundedPlayer && velocity.y < 0)
     {
-        // 1. Controllo se il giocatore tocca terra
-        groundedPlayer = cc.isGrounded;
-        
-        // Reset della velocità verticale quando è a terra
-        if (groundedPlayer && velocity.y < 0)
-        {
-            velocity.y = -2f; // Un piccolo valore negativo per tenerlo "incollato" al suolo
-        }
-
-        float x = Input.GetAxis("Horizontal");
-        float z = Input.GetAxis("Vertical");
-
-        Vector3 move = transform.right * x + transform.forward * z;
-        cc.Move(move * speed * Time.deltaTime);
-
-        // 3. Logica del Salto
-        // Il salto viene attivato solo se il giocatore è a terra
-        if (Input.GetButtonDown("Jump") && groundedPlayer)
-        {
-            // Formula fisica per calcolare la velocità necessaria a raggiungere un'altezza specifica
-            velocity.y = Mathf.Sqrt(jumpHeight * -3.0f * gravity);
-        }
-
-        velocity.y += gravity * Time.deltaTime;
-        cc.Move(velocity * Time.deltaTime);
+        // Quando il personaggio è a terra, resettiamo la velocità verticale a -2f
+        // Non la settiamo a 0 perché piccola gravità mantiene il player "attaccato" al terreno
+        // Prevenisce il player di "fluttuare" o separarsi dal suolo tra un frame e l'altro
+        velocity.y = -2f;
     }
+
+    // 1. Calcolo movimento orizzontale
+    float x = Input.GetAxis("Horizontal");
+    float z = Input.GetAxis("Vertical");
+    Vector3 move = transform.right * x + transform.forward * z;
+
+    // 2. Logica del Salto
+    if (Input.GetButtonDown("Jump") && groundedPlayer)
+    {
+        // Formula fisica: v = sqrt(2 * gravità * altezza_desiderata)
+        // Calcola la velocità iniziale (m/s) necessaria per raggiungere jumpHeight
+        // Il moltiplicatore -3.0f modula la forza del salto rispetto alla gravità
+        // Usiamo -3.0f * gravity perché gravity è negativa (-9.81), quindi il risultato è positivo
+        velocity.y = Mathf.Sqrt(jumpHeight * -3.0f * gravity);
+    }
+
+    // 3. Applichiamo la gravità alla velocità verticale
+    // STEP 1 di integrazione fisica: Accelerazione × Tempo = Velocità
+    // gravity (m/s²) × Time.deltaTime (s) = velocità accumulata (m/s)
+    // velocity.y accumula questa velocità ogni frame
+    velocity.y += gravity * Time.deltaTime;
+
+    // 4. UNICA CHIAMATA MOVE: combina orizzontale e verticale
+    // STEP 2 di integrazione fisica: Velocità × Tempo = Spostamento
+    // (move * speed + velocity) è la velocità totale (m/s)
+    // Moltiplicare per Time.deltaTime converte in spostamento (m)
+    // Così il movimento è indipendente dal framerate
+    cc.Move((move * speed + velocity) * Time.deltaTime);
+}
 }

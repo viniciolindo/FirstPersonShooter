@@ -5,7 +5,6 @@ public class RaycastShoot : MonoBehaviour
     public float damage = 10f;
     public float range = 100f;
     public Camera fpsCam;
-    public ParticleSystem muzzleFlash;
     public GameObject impactEffect; // Prefab per l'impatto
 
     void Update()
@@ -19,8 +18,6 @@ public class RaycastShoot : MonoBehaviour
     void Shoot()
     {
         // Effetto visivo dello sparo
-        if (muzzleFlash != null) muzzleFlash.Play();
-
         RaycastHit hit;
         // Lancia il raggio dal centro della telecamera in avanti
         if (Physics.Raycast(fpsCam.transform.position, fpsCam.transform.forward, out hit, range))

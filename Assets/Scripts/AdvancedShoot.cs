@@ -10,13 +10,7 @@ public class AdvancedShoot : MonoBehaviour
 
     [Header("Riferimenti")]
     public Camera fpsCam;           // La telecamera principale per mirare
-    public Transform muzzleEnd;     // La punta dell'arma (da dove parte la scia visiva)
-    public ParticleSystem muzzleFlash; // Fiammata alla bocca dell'arma
     public GameObject impactEffectPrefab; // Il prefabbricato del foro/scintilla
-
-    [Header("Effetti Visivi")]
-    public LineRenderer bulletTracer; // Trascina qui il componente LineRenderer
-    public float tracerDuration = 0.05f; // Quanto dura la scia visiva
 
     private float nextTimeToFire = 0f;
 
@@ -32,8 +26,6 @@ public class AdvancedShoot : MonoBehaviour
 
     void Shoot()
     {
-        // 1. Feedback immediato (fiammata)
-        if (muzzleFlash != null) muzzleFlash.Play();
 
         RaycastHit hit;
        
@@ -48,6 +40,10 @@ public class AdvancedShoot : MonoBehaviour
             Vector3 offsetSpawnPos = hit.point + (hit.normal * 0.01f);
             
             // Ruota l'effetto per guardare "fuori" dalla superficie
+            // LookRotation() crea un quaternione che "guarda" verso una direzione specifica
+            // hit.normal è il vettore perpendicolare alla superficie colpita (punta verso l'esterno)
+            // Quindi l'effetto particellare si orienterà perpendicolarmente alla superficie
+            // Esempio: se colpisci un muro verticale, l'effetto sparerà verso di te (normale della superficie)
             Quaternion lookRotation = Quaternion.LookRotation(hit.normal);
 
             // Istanzia l'effetto nel punto corretto con l'offset
