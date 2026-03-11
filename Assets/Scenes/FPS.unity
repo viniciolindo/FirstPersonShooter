@@ -881,11 +881,7 @@ MonoBehaviour:
   range: 100
   fireRate: 10
   fpsCam: {fileID: 330585545}
-  muzzleEnd: {fileID: 0}
-  muzzleFlash: {fileID: 0}
   impactEffectPrefab: {fileID: 7027976779066958410, guid: 0b4baf99434ba4f7b8cef247151036a0, type: 3}
-  bulletTracer: {fileID: 0}
-  tracerDuration: 1
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -1093,7 +1089,7 @@ GameObject:
   - component: {fileID: 1240252882}
   - component: {fileID: 1240252881}
   m_Layer: 0
-  m_Name: enemy
+  m_Name: Enemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
